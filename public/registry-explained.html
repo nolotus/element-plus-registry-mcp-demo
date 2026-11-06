@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Registry × MCP：源码如何分发？</title>
+<style>
+:root{color-scheme:dark;--bg:#0b1221;--panel:#142136;--border:#354760;--text:#ecf3ff;--muted:#adbed4;--mint:#82e4d0}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 15% 0%,#1a3d50 0,transparent 52%),var(--bg);font:16px/1.65 system-ui,-apple-system,sans-serif;color:var(--text)}main{max-width:1040px;margin:auto;padding:48px 22px 80px}h1{font-size:clamp(30px,5vw,56px);line-height:1.16;letter-spacing:-.04em;margin:10px 0 18px}h2{font-size:22px;margin:0 0 14px}.lead{font-size:19px;color:var(--muted)}.eyebrow{color:var(--mint);font-weight:700;font-size:12px;letter-spacing:.15em}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px;margin:32px 0}.card{background:linear-gradient(145deg,#172740,#111c30);border:1px solid var(--border);border-radius:17px;padding:24px;min-width:0}.wide{grid-column:1/-1}.pill{display:inline-block;font-size:12px;background:#1c4448;color:#a1f3dc;padding:3px 10px;border-radius:30px;margin-bottom:14px}.flow{display:flex;gap:12px;align-items:center;justify-content:space-between;margin:24px 0}.node{flex:1;border-radius:12px;border:1px solid #566782;padding:17px 10px;text-align:center;background:#0c1728}.node strong{display:block}.node small{display:block;color:var(--muted)}.arr{color:var(--mint);font-size:24px}code,pre{font-family:ui-monospace,Consolas,monospace}pre{background:#08111f;border:1px solid #344861;border-radius:12px;padding:17px;font-size:13px;white-space:pre-wrap;overflow-wrap:anywhere;color:#baf3dc}table{width:100%;border-collapse:collapse}td,th{padding:10px;text-align:left;border-bottom:1px solid #34465a}th{color:var(--mint)}.note{border-left:4px solid var(--mint);background:#193637;padding:14px 18px;border-radius:0 10px 10px 0}a{color:#aad7ff}p{margin:12px 0} @media(max-width:700px){.grid{grid-template-columns:1fr}.wide{grid-column:auto}.flow{flex-direction:column}.arr{transform:rotate(90deg)}.node{width:100%}}
+</style></head><body><main>
+<div class="eyebrow">VUE · ELEMENT PLUS · SHADCN-VUE REGISTRY</div>
+<h1>组件源码能放进 JSON？<br>Registry 一定要托管吗？</h1>
+<p class="lead">可以。发布时，每一个 Registry Item JSON 可以带着一个或多个 Vue 文件的完整源码字符串；其他项目需要它时才下载。Registry 需要一个可访问的位置，但不必有专门的后端服务。</p>
+<div class="grid">
+<section class="card wide"><span class="pill">01 · 构建与分发</span><h2>不是把整个组件库打成一个 JSON</h2>
+<div class="flow"><div class="node"><strong>组件源码仓库</strong><small>UserTable.vue<br>registry.json</small></div><div class="arr">→</div><div class="node"><strong>构建脚本</strong><small>读取文件、填充元数据</small></div><div class="arr">→</div><div class="node"><strong>按组件分开发布</strong><small>user-table.json<br>user-card.json</small></div></div>
+<p><code>registry.json</code> 是源目录：描述组件和文件路径；构建后的 <code>/r/user-table.json</code> 是分发包：包含 <code>files[].content</code> 中的源码文本。它们不是同一个文件。</p></section>
+<section class="card"><span class="pill">02 · JSON 具体长这样</span><h2>源码只是一段字符串</h2><pre>{
+ "name": "user-card",
+ "type": "registry:component",
+ "dependencies": ["element-plus"],
+ "files": [{
+   "path": "UserCard.vue",
+   "type": "registry:component",
+   "content": "&lt;template&gt;\n  &lt;el-card&gt;Hello&lt;/el-card&gt;\n&lt;/template&gt;"
+ }]
+}</pre><p>这只是结构示意。真正 JSON 中的换行和引号会转义；CLI 读取后，将字符串写回到 Vue 文件。</p></section>
+<section class="card"><span class="pill">03 · 多大？</span><h2>按需下载，而非一次拉全部</h2><p>一个简单的 Vue 文件通常只有几 KB；复杂模板可能几十或几百 KB。每个组件独立 JSON，下载特定条目即可。</p><p>在本次 Demo 的本地构建产物中，5 个条目加索引共约 <strong>13.38 KB</strong>（未压缩），只是示例规模，不代表大型组件库。</p><div class="note">Element Plus 本身通常作为 npm 依赖安装，不会把整个 Element Plus 的源码复制进每个 Registry Item。</div></section>
+<section class="card wide"><span class="pill">04 · 托管</span><h2>静态网站托管就够了</h2><table><thead><tr><th>在哪里</th><th>怎么获取</th><th>适合什么</th></tr></thead><tbody>
+<tr><td>本地文件或 dev server</td><td>本地路径、localhost</td><td>开发与实验</td></tr>
+<tr><td>GitHub Pages / Cloudflare Pages</td><td>公开的 HTTPS JSON 地址</td><td>公开或团队通用组件</td></tr>
+<tr><td>私有 HTTP API / 对象存储</td><td>鉴权的 JSON 地址</td><td>私有组件与权限控制</td></tr>
+</tbody></table><p><strong>托管 Registry ≠ 托管 MCP Server。</strong>前者是静态数据；后者需要一个能接受 MCP 协议请求的服务进程（可以由用户电脑运行官方 MCP）。</p></section>
+<section class="card wide"><span class="pill">05 · 如何工作</span><h2>另一个 Vue 项目怎样获取组件？</h2>
+<div class="flow"><div class="node"><strong>用户要求</strong><small>“安装 UserTable”</small></div><div class="arr">→</div><div class="node"><strong>CLI 或 MCP</strong><small>读取远程 Registry Item</small></div><div class="arr">→</div><div class="node"><strong>当前 Vue 项目</strong><small>写入 .vue 文件、处理依赖</small></div></div>
+<pre>GET https://example.com/r/user-table.json
+→ 读取元数据、files[].content、依赖
+→ CLI 安装 Vue 文件至当前项目
+→ npm 安装 element-plus（若项目尚未安装）</pre>
+<div class="note"><b>你的质疑成立：</b>如果 Claude Code 或 Codex 已在组件源码仓库里，直接 grep / 读取 .vue 往往更简单。Registry 的主要增量是跨项目分发、依赖描述和统一安装入口；MCP 是 Agent 使用它的一种接口，而非必需条件。</div>
+</section><section class="card wide"><h2>设计师怎么理解？</h2><p><strong>组件源码仓库</strong>是厨房；<strong>Registry</strong> 是菜单和每道菜的打包配方；<strong>静态托管</strong>是公开菜单的地址；<strong>CLI</strong>负责取件和安装；<strong>MCP</strong>给 Agent 一个标准化的点单接口。</p>
+<p>参考：<a href="https://www.shadcn-vue.com/docs/registry/getting-started">Registry 文档</a> · <a href="https://www.shadcn-vue.com/docs/registry/registry-item-json">Registry Item Schema</a></p></section></div></main></body></html>
