@@ -1,0 +1,30 @@
+{
+  "$schema": "https://shadcn-vue.com/schema/registry-item.json",
+  "name": "dashboard-template",
+  "type": "registry:block",
+  "title": "团队仪表盘模板",
+  "description": "包含统计卡片、用户卡片和用户表格的完整管理后台页面。",
+  "dependencies": [
+    "element-plus"
+  ],
+  "files": [
+    {
+      "path": "src/templates/DashboardTemplate.vue",
+      "type": "registry:component",
+      "target": "src/templates/DashboardTemplate.vue",
+      "content": "<script setup lang=\"ts\">\nimport UserCard from '../components/UserCard.vue'\nimport UserTable, { type DemoUser } from '../components/UserTable.vue'\nconst users: DemoUser[] = [\n  { id: 1, name: '林晓', email: 'lin@example.com', role: '设计师', status: 'active' },\n  { id: 2, name: '周舟', email: 'zhou@example.com', role: '开发者', status: 'active' },\n  { id: 3, name: '陈果', email: 'chen@example.com', role: '产品经理', status: 'inactive' },\n]\n</script>\n<template>\n  <div class=\"dashboard-template\">\n    <div class=\"template-heading\"><div><span class=\"eyebrow\">ELEMENT PLUS / TEMPLATE</span><h2>团队仪表盘</h2><p>复用业务组件构建完整页面，适合作为 Registry 的 block 模板。</p></div><el-button plain>导出报表</el-button></div>\n    <div class=\"stats\"><div v-for=\"item in [{label:'团队成员',value:'24',note:'+3 本月'}, {label:'活跃项目',value:'08',note:'2 个待发布'}, {label:'任务完成率',value:'92%',note:'+8% 本周'}]\" :key=\"item.label\" class=\"stat\"><span>{{ item.label }}</span><strong>{{ item.value }}</strong><small>{{ item.note }}</small></div></div>\n    <div class=\"cards\"><UserCard name=\"林晓\" role=\"视觉设计师\" email=\"lin@example.com\"/><UserCard name=\"周舟\" role=\"前端开发\" email=\"zhou@example.com\"/></div>\n    <UserTable :users=\"users\" />\n  </div>\n</template>\n<style scoped>.dashboard-template{display:grid;gap:20px}.template-heading{display:flex;justify-content:space-between;align-items:center;gap:14px}.template-heading h2{margin:7px 0;font-size:27px}.template-heading p{margin:0;color:#8792a4;font-size:13px}.eyebrow{letter-spacing:.13em;color:#6587c5;font-weight:750;font-size:10px}.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px}.stat{display:flex;flex-direction:column;gap:10px;padding:20px;border:1px solid #e9edf4;border-radius:16px;background:#fff}.stat span{font-size:13px;color:#818da0}.stat strong{font-size:31px;letter-spacing:-.04em}.stat small{color:#58a180}.cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}@media(max-width:650px){.stats{grid-template-columns:1fr}.cards{grid-template-columns:1fr}.template-heading{align-items:flex-start;flex-direction:column}}</style>\n"
+    },
+    {
+      "path": "src/components/UserCard.vue",
+      "type": "registry:component",
+      "target": "src/components/UserCard.vue",
+      "content": "<script setup lang=\"ts\">\nwithDefaults(defineProps<{ name: string; role?: string; email?: string; status?: 'active' | 'inactive' }>(), { role: '成员', email: '', status: 'active' })\n</script>\n<template>\n  <el-card shadow=\"hover\" class=\"user-card\">\n    <div class=\"user-card__inner\">\n      <el-avatar :size=\"44\" class=\"user-card__avatar\">{{ name.slice(0, 1) }}</el-avatar>\n      <div class=\"user-card__info\">\n        <strong>{{ name }}</strong><span>{{ role }} · {{ email }}</span>\n      </div>\n      <el-tag :type=\"status === 'active' ? 'success' : 'info'\" effect=\"light\">{{ status === 'active' ? '活跃' : '停用' }}</el-tag>\n    </div>\n  </el-card>\n</template>\n<style scoped>\n.user-card__inner{display:flex;align-items:center;gap:14px;min-width:0}.user-card__avatar{background:#e7efff;color:#3972d1;flex:none}.user-card__info{min-width:0;display:flex;flex:1;flex-direction:column;gap:6px}.user-card__info span{font-size:12px;color:#8a93a5;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}\n</style>\n"
+    },
+    {
+      "path": "src/components/UserTable.vue",
+      "type": "registry:component",
+      "target": "src/components/UserTable.vue",
+      "content": "<script setup lang=\"ts\">\nimport { computed, ref } from 'vue'\nexport interface DemoUser { id: number; name: string; email: string; role: string; status: 'active' | 'inactive' }\nconst props = withDefaults(defineProps<{ users: DemoUser[]; loading?: boolean }>(), { loading: false })\nconst keyword = ref('')\nconst filtered = computed(() => props.users.filter(u => `${u.name} ${u.email}`.toLowerCase().includes(keyword.value.toLowerCase())))\n</script>\n<template>\n  <section class=\"table-panel\">\n    <div class=\"table-toolbar\"><div><h3>团队成员</h3><p>快速查找并查看成员状态</p></div><el-input v-model=\"keyword\" placeholder=\"搜索姓名或邮箱\" clearable style=\"width:220px\" /></div>\n    <el-table :data=\"filtered\" :loading=\"loading\" stripe style=\"width:100%\">\n      <el-table-column prop=\"name\" label=\"姓名\" min-width=\"110\" />\n      <el-table-column prop=\"email\" label=\"邮箱\" min-width=\"190\" />\n      <el-table-column prop=\"role\" label=\"角色\" min-width=\"100\" />\n      <el-table-column label=\"状态\" width=\"100\"><template #default=\"scope\"><el-tag :type=\"scope.row.status === 'active' ? 'success' : 'info'\">{{ scope.row.status === 'active' ? '活跃' : '停用' }}</el-tag></template></el-table-column>\n    </el-table>\n  </section>\n</template>\n<style scoped>.table-panel{background:white;border:1px solid #e9edf4;border-radius:16px;padding:20px}.table-toolbar{display:flex;align-items:center;justify-content:space-between;gap:15px;margin-bottom:16px}.table-toolbar h3{margin:0 0 6px;font-size:17px}.table-toolbar p{margin:0;color:#8a93a5;font-size:13px}@media(max-width:650px){.table-toolbar{align-items:stretch;flex-direction:column}.table-toolbar :deep(.el-input){width:100%!important}}</style>\n"
+    }
+  ]
+}

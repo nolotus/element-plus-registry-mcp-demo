@@ -1,0 +1,26 @@
+{
+  "name": "element-plus-registry-mcp-demo",
+  "private": true,
+  "license": "MIT",
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "npm run registry:build && vue-tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "registry:build": "node scripts/build-registry.mjs",
+    "registry:check": "node scripts/check-registry.mjs",
+    "test": "npm run registry:build && npm run registry:check"
+  },
+  "dependencies": {
+    "element-plus": "^2.11.5",
+    "vue": "^3.5.18"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.6",
+    "@vitejs/plugin-vue": "^6.0.1",
+    "typescript": "~5.9.2",
+    "vite": "^7.1.2",
+    "vue-tsc": "^3.1.2"
+  }
+}

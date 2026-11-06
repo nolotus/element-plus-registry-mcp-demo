@@ -1,0 +1,97 @@
+{
+  "$schema": "https://shadcn-vue.com/schema/registry.json",
+  "name": "element-lab",
+  "homepage": "https://github.com/nolotus/element-plus-registry-mcp-demo",
+  "items": [
+    {
+      "name": "save-button",
+      "type": "registry:component",
+      "title": "统一保存按钮",
+      "description": "Element Plus el-button 的业务封装，支持 loading、label 和 save 事件。",
+      "dependencies": [
+        "element-plus"
+      ],
+      "files": [
+        {
+          "path": "src/components/SaveButton.vue",
+          "type": "registry:component",
+          "target": "src/components/SaveButton.vue"
+        }
+      ]
+    },
+    {
+      "name": "user-card",
+      "type": "registry:component",
+      "title": "用户卡片",
+      "description": "显示用户姓名、邮箱、角色与状态，基于 Element Plus。",
+      "dependencies": [
+        "element-plus"
+      ],
+      "files": [
+        {
+          "path": "src/components/UserCard.vue",
+          "type": "registry:component",
+          "target": "src/components/UserCard.vue"
+        }
+      ]
+    },
+    {
+      "name": "user-table",
+      "type": "registry:component",
+      "title": "用户表格",
+      "description": "带搜索过滤、成员角色和状态标签的 Element Plus 表格。",
+      "dependencies": [
+        "element-plus"
+      ],
+      "files": [
+        {
+          "path": "src/components/UserTable.vue",
+          "type": "registry:component",
+          "target": "src/components/UserTable.vue"
+        }
+      ]
+    },
+    {
+      "name": "dashboard-template",
+      "type": "registry:block",
+      "title": "团队仪表盘模板",
+      "description": "包含统计卡片、用户卡片和用户表格的完整管理后台页面。",
+      "dependencies": [
+        "element-plus"
+      ],
+      "files": [
+        {
+          "path": "src/templates/DashboardTemplate.vue",
+          "type": "registry:component",
+          "target": "src/templates/DashboardTemplate.vue"
+        },
+        {
+          "path": "src/components/UserCard.vue",
+          "type": "registry:component",
+          "target": "src/components/UserCard.vue"
+        },
+        {
+          "path": "src/components/UserTable.vue",
+          "type": "registry:component",
+          "target": "src/components/UserTable.vue"
+        }
+      ]
+    },
+    {
+      "name": "login-template",
+      "type": "registry:block",
+      "title": "登录页模板",
+      "description": "带前端表单验证提示的 Element Plus 登录页，演示用途不连接真实认证。",
+      "dependencies": [
+        "element-plus"
+      ],
+      "files": [
+        {
+          "path": "src/templates/LoginTemplate.vue",
+          "type": "registry:component",
+          "target": "src/templates/LoginTemplate.vue"
+        }
+      ]
+    }
+  ]
+}

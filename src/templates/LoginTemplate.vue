@@ -1,0 +1,10 @@
+<script setup lang="ts">
+import { ref } from 'vue'
+import { ElMessage } from 'element-plus'
+const email = ref(''); const password = ref('')
+const submit = () => { if (!email.value || !password.value) { ElMessage.warning('请填写邮箱和密码'); return }; ElMessage.success('演示模式：登录表单已提交') }
+</script>
+<template>
+  <div class="login-template"><div class="login-panel"><div class="logo">◈</div><h2>欢迎回来</h2><p>这是由 Element Plus 组件拼成的可复用登录页面模板。</p><el-form label-position="top" @submit.prevent="submit"><el-form-item label="邮箱"><el-input v-model="email" placeholder="name@example.com" /></el-form-item><el-form-item label="密码"><el-input v-model="password" show-password type="password" placeholder="输入密码" /></el-form-item><el-button native-type="submit" type="primary" class="login-action">登录</el-button></el-form><small>仅用于教学演示，不连接真实认证服务。</small></div></div>
+</template>
+<style scoped>.login-template{min-height:445px;background:linear-gradient(135deg,#f2f6ff,#fafcff);border:1px solid #e9edf4;border-radius:18px;display:grid;place-items:center;padding:24px}.login-panel{max-width:360px;width:100%;padding:28px;background:white;border:1px solid #e9edf4;border-radius:18px;box-shadow:0 15px 40px #22376910}.logo{display:grid;place-items:center;color:#fff;background:#5679c4;width:38px;height:38px;border-radius:12px}.login-panel h2{margin:16px 0 6px}.login-panel p{font-size:13px;line-height:1.7;color:#8792a4;margin:0 0 22px}.login-action{width:100%}.login-panel small{display:block;margin-top:18px;color:#a1aabb;text-align:center}</style>

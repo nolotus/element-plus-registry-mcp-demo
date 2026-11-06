@@ -1,0 +1,18 @@
+{
+  "$schema": "https://shadcn-vue.com/schema/registry-item.json",
+  "name": "save-button",
+  "type": "registry:component",
+  "title": "统一保存按钮",
+  "description": "Element Plus el-button 的业务封装，支持 loading、label 和 save 事件。",
+  "dependencies": [
+    "element-plus"
+  ],
+  "files": [
+    {
+      "path": "src/components/SaveButton.vue",
+      "type": "registry:component",
+      "target": "src/components/SaveButton.vue",
+      "content": "<script setup lang=\"ts\">\nwithDefaults(defineProps<{ loading?: boolean; label?: string }>(), { loading: false, label: '保存' })\nconst emit = defineEmits<{ save: [] }>()\n</script>\n<template>\n  <el-button type=\"primary\" :loading=\"loading\" @click=\"emit('save')\">{{ label }}</el-button>\n</template>\n"
+    }
+  ]
+}

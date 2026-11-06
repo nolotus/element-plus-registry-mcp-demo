@@ -1,0 +1,32 @@
+[
+  {
+    "name": "save-button",
+    "type": "registry:component",
+    "title": "统一保存按钮",
+    "description": "Element Plus el-button 的业务封装，支持 loading、label 和 save 事件。"
+  },
+  {
+    "name": "user-card",
+    "type": "registry:component",
+    "title": "用户卡片",
+    "description": "显示用户姓名、邮箱、角色与状态，基于 Element Plus。"
+  },
+  {
+    "name": "user-table",
+    "type": "registry:component",
+    "title": "用户表格",
+    "description": "带搜索过滤、成员角色和状态标签的 Element Plus 表格。"
+  },
+  {
+    "name": "dashboard-template",
+    "type": "registry:block",
+    "title": "团队仪表盘模板",
+    "description": "包含统计卡片、用户卡片和用户表格的完整管理后台页面。"
+  },
+  {
+    "name": "login-template",
+    "type": "registry:block",
+    "title": "登录页模板",
+    "description": "带前端表单验证提示的 Element Plus 登录页，演示用途不连接真实认证。"
+  }
+]
